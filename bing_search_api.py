@@ -9,7 +9,7 @@ import os
 
 URL = "https://api.cognitive.microsoft.com/bing/v7.0/images/search"
 API_KEY = os.environ["BING_API_KEY"]
-MAX_RESULTS = 250
+MAX_RESULTS = 100
 GROUP_SIZE = 50
 
 
