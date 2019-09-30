@@ -101,3 +101,4 @@ for offset in range(0, estNumResults, GROUP_SIZE):
 		# update the counter
 		total += 1
 
+print("[INFO] Downloaded {} images to {}".format(total+1, args["output"]))
