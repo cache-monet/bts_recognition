@@ -10,7 +10,7 @@ ap.add_argument("-i", "--dataset", required=True,
 	help="path to input directory of faces + images")
 ap.add_argument("-e", "--encodings", required=True,
 	help="path to serialized db of facial encodings")
-ap.add_argument("-d", "--detection-method", type=str, default="cnn",
+ap.add_argument("-d", "--detection-method", type=str, default="hog",
 	help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
@@ -22,10 +22,10 @@ knownNames = []
 
 for (i, imagePath) in enumerate(imagePaths):
 	# extract the person name from the image path
-	print("[INFO] processing image {}/{}".format(i+1, len(imagePaths)))
+	name = imagePath.split(os.path.sep)[-2]
+	print("[INFO] processing image {}/{} for {}".format(i+1, len(imagePaths), name))
 
 	# load the input image and convert it from BGR (OpenCV ordering) # to dlib ordering (RGB) 
-	name = imagePath.split(os.path.sep)[-2]
 	image = cv2.imread(imagePath)
 	rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 	# detect the (x, y)-coordinates of the bounding boxes
@@ -46,6 +46,6 @@ for (i, imagePath) in enumerate(imagePaths):
 # dump the facial encodings + names to disk
 print("[INFO] serializing encodings...")
 data = {"encodings": knownEncodings, "names": knownNames}
-f = open(args["encodings"], "wb")
+f = open(args["encodings"], "ab")
 f.write(pickle.dumps(data))
 f.close()

@@ -3,23 +3,23 @@ import argparse
 import requests
 import cv2
 import os
- 
 
-# usage: python bing_search_api.py --query "suga" --output dataset/suga
-
-URL = "https://api.cognitive.microsoft.com/bing/v7.0/images/search"
-API_KEY = os.environ["BING_API_KEY"]
-MAX_RESULTS = 100
-GROUP_SIZE = 50
-
+# usage: python bing_search_api.py -q suga -r 20 -o dataset/suga
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-q", "--query", required=True,
 	help="search query to search Bing Image API for")
+ap.add_argument("-r", "--results", type=int, default=100,
+	help="maximum results")
 ap.add_argument("-o", "--output", required=True,
 	help="path to output directory of images")
 args = vars(ap.parse_args())
+
+URL = "https://api.cognitive.microsoft.com/bing/v7.0/images/search"
+API_KEY = os.environ["BING_API_KEY"]
+MAX_RESULTS = args["results"]
+GROUP_SIZE = 10
 
 # when attempting to download images from the web both the Python
 # programming language and the requests library have a number of
