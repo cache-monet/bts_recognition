@@ -5,7 +5,7 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-e", "--encodings", required=True,
+ap.add_argument("-e", "--encodings", type=str, default="encodings.pickle",
 	help="path to serialized db of facial encodings")
 ap.add_argument("-i", "--image", required=True,
 	help="path to input image")
@@ -37,7 +37,7 @@ for encoding in encodings:
 	# attempt to match each face in the input image to our known
 	# encodings
 	matches = face_recognition.compare_faces(data["encodings"],
-		encoding, tolerance=0.5)
+		encoding, tolerance=0.4)
 	name = "???"
 	# check to see if we have found a match
 	if True in matches:
