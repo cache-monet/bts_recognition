@@ -1,7 +1,19 @@
 ### BTS RECOGNITION
-Detects and recognizes BTS members in pictures
+Identifies BTS members in pictures
 
 usage:
 ```
-$ python recognize_bts_images.py -i path/to/image
+# to identify bts
+$ python main.py path/to/image
+
+# help menu
+$ python main.py --help
+Usage: main.py [OPTIONS] IMAGE_TO_CHECK
+
+Options:
+  --detection TEXT   Which face detection model to use. Options are "hog" or
+                     "cnn".
+  --tolerance FLOAT  Tolerance level: (0...1); lower is more accurate, higher
+                     for better performance 
+  --help             Show this message and exit.
 ```
