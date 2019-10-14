@@ -6,6 +6,7 @@ import imutils
 import pickle
 import time
 import cv2
+from recognize import recognize
  
 # construct the argument parser and parse the arguments
 @click.command()
@@ -15,39 +16,21 @@ import cv2
   help="whether or not to display output frame to screen")
 @click.option("--detection", '-d', default="cnn",
 	help="face detection model to use: either `hog` or `cnn`")
-# @click.option('--tolerance', default=0.6, help='Tolerance level: (0...1); lower is more accurate, higher for better performance')
-def main(input, output, display, detection):
+@click.option('--tolerance', default=0.55, help='Tolerance level: (0...1); lower is more accurate, higher for better performance')
+def main(input, output, display, detection, tolerance):
   print("[INFO] loading encodings...")
   data = pickle.loads(open('encodings.pickle', "rb").read())
   print("[INFO] LOADING VIDEO...")
   vid = cv2.VideoCapture(input)
   writer = None
   while True: 
+    names = []
     _, frame = vid.read()
-    # convert the input frame from BGR to RGB then resize it to have
-    # a width of 750px (to speedup processing)
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    # rgb = frame[:, :, ::-1]
-
     rgb = imutils.resize(frame, width=620)
     r = frame.shape[1] / float(rgb.shape[1])
-    boxes = face_recognition.face_locations(rgb, model=detection)
-    encodings = face_recognition.face_encodings(rgb, boxes)
-    names = []
-    for encoding in encodings:
-      matches = face_recognition.compare_faces(data["encodings"],
-        encoding, tolerance=0.55)
-      name = "Unknown"
-      if True in matches:
-        matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-        counts = {}
-        for i in matchedIdxs:
-          name = data["names"][i]
-          counts[name] = counts.get(name, 0) + 1
-        name = max(counts, key=counts.get)
-      names.append(name)
+    boxes = recognize(rgb, names, data, detection, tolerance)
     for ((top, right, bottom, left), name) in zip(boxes, names):
-      if name == 'Unknown': continue
+      if name == '???': continue
       top = int(top * r)
       right = int(right * r)
       bottom = int(bottom * r)
